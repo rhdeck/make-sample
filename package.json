@@ -1,0 +1,25 @@
+{
+  "name": "react-native-make-demo-app",
+  "version": "1.0.0",
+  "description": "Promote a demo from within this app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhdeck/react-native-make-demo-app.git"
+  },
+  "author": "Ray Deck",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rhdeck/react-native-make-demo-app/issues"
+  },
+  "rnpm": {
+    "plugin": "plugin"
+  },
+  "homepage": "https://github.com/rhdeck/react-native-make-demo-app#readme",
+  "dependencies": {
+    "recursive-copy": "^2.0.7"
+  }
+}
