@@ -1,7 +1,7 @@
 {
-  "name": "react-native-make-demo-app",
+  "name": "make-sample-app",
   "version": "1.0.0",
-  "description": "Promote a demo from within this app",
+  "description": "create sample app from within this app",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,11 +15,12 @@
   "bugs": {
     "url": "https://github.com/rhdeck/react-native-make-demo-app/issues"
   },
-  "rnpm": {
-    "plugin": "plugin"
-  },
+  "bin": "bin/cli.js",
   "homepage": "https://github.com/rhdeck/react-native-make-demo-app#readme",
   "dependencies": {
-    "recursive-copy": "^2.0.7"
+    "commander": "^2.12.2",
+    "package-template": "rhdeck/package-template",
+    "recursive-copy": "^2.0.7",
+    "yarnif": "rhdeck/yarnif"
   }
 }
