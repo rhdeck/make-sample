@@ -15,7 +15,7 @@
   "bugs": {
     "url": "https://github.com/rhdeck/react-native-make-demo-app/issues"
   },
-  "bin": "bin/cli.js",
+  "bin": "./bin/cli.js",
   "homepage": "https://github.com/rhdeck/react-native-make-demo-app#readme",
   "dependencies": {
     "commander": "^2.12.2",
