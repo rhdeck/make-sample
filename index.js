@@ -40,12 +40,6 @@ function makeSampleApp(dependency, basePath) {
   }
   const dependencyPath = basePath + "/node_modules/" + dependencyBase;
   if (!dependencyBase || !fs.existsSync(dependencyPath)) {
-    console.log(
-      "Adding a dependency for ",
-      dependency,
-      dependencyBase,
-      dependencyPath
-    );
     yarnif.addDevDependency(dependency);
     return makeSampleApp(dependency, basePath);
   }
