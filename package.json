@@ -1,6 +1,6 @@
 {
   "name": "make-sample",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "create sample app from within this app",
   "main": "index.js",
   "scripts": {
