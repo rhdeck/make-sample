@@ -133,10 +133,7 @@ function makeSampleApp(dependency, basePath) {
     overwrite: true,
     filter: ["**/*", "!package.json"]
   }).then(results => {
-    console.log("Copied the following files", results);
     console.log("Completed generation with", dependency);
-    // fs.writeFileSync(packagePath, newJSON);
-    // yarnif.install();
     if (destobj.sampleApp && destobj.sampleApp.postInstall) {
       runCommand(destObj.sampleApp.postInstall);
     } else {
