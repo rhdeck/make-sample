@@ -1,30 +1,64 @@
 const fs = require("fs");
+const Path = require("path");
 const recursive = require("recursive-copy");
 const cp = require("child_process");
-const yarnif = requrie("yarnif");
+const yarnif = require("yarnif");
 function makeSampleApp(dependency, basePath) {
   if (basePath) process.chdir(basePath);
-  const basePath = process.cwd();
+  basePath = process.cwd();
   const packagePath = basePath + "/package.json";
-  const package = require(packagePath);
-
+  const package = JSON.parse(
+    fs.readFileSync(packagePath, { encoding: "utf8" })
+  );
+  var dependencyBase;
   if (!package) {
     console.log("This is not a valid npm package directory", basePath);
     return false;
   }
-  const dependencyPath = basePath + "/node_modules/" + dependency;
-  if (!fs.existsSync(dependencyPath)) {
+  console.log("checking things out. my package is ", package);
+  if (fs.existsSync(basePath + "/node_modules/" + dependency)) {
+    dependencyBase = dependency;
+    console.log("I am using dependencybase from dependency", dependencyBase);
+  } else {
+    //Look up dependencies
+    console.log("Checking dependencies, bro", package);
+    if (package.dependencies) {
+      Object.keys(package.dependencies).forEach(key => {
+        const val = package.dependencies[key];
+        console.log("Checking dependencies", key, val, dependency);
+        if (val == dependency) {
+          dependencyBase = key;
+        }
+      });
+      if (!dependencyBase) {
+        if (package.devDependencies) {
+          Object.keys(package.devDependencies).forEach(key => {
+            const val = package.dependencies[key];
+            console.log("Checking dependencies", key, val, dependency);
+            if (val == dependency) {
+              dependencyBase = key;
+            }
+          });
+        }
+      }
+    }
+  }
+  const dependencyPath = basePath + "/node_modules/" + dependencyBase;
+  if (!dependencyBase || !fs.existsSync(dependencyPath)) {
     console.log(
-      "This dependency does not exist or is not installed",
-      dependency
+      "Adding a dependency for ",
+      dependency,
+      dependencyBase,
+      dependencyPath
     );
-    yarnif.addDevDependency(dependency);
-    return false;
+    yarnif.addDependency(dependency);
+    return makeSampleApp(dependency, basePath);
   }
   const depPackagePath = dependencyPath + "/package.json";
   var path = dependencyPath + "/sampleapp/";
-  if (!fs.existsSync(depPackagePath && !fs.existsSync(path))) {
+  if (!fs.existsSync(depPackagePath) && !fs.existsSync(path)) {
     //Then this is the sample
+    console.log("using root because I don't have", depPackagePath, path);
     path = dependencyPath;
   } else {
     //Open the package
@@ -89,16 +123,71 @@ function makeSampleApp(dependency, basePath) {
     });
     newJSON = JSON.stringify(destobj, null, 2);
   }
-
-  recursive(path, ".", {
-    overwrite: true
-  }).then(() => {
-    console.log("Completed generation with", dependency);
-    fs.writeFileSync(packagePath, newJSON);
-    yarnif.install();
-    if (destobj.sampleApp && destobj.sampleApp.postInstall) {
-      cp.spawnSync(destobj.sampleApp.postInstall, { stdio: "inherit" });
+  fs.writeFileSync(packagePath, newJSON);
+  console.log("Executing initial install");
+  yarnif.install();
+  console.log("Initial install complete");
+  console.log("Starting preInstall checks");
+  if (destobj.sampleApp && destobj.sampleApp.preInstall) {
+    runCommand(destobj.sampleApp.preInstall);
+  } else {
+    if (destobj.dependencies) {
+      Object.keys(destobj.dependencies).forEach(doPreInstall);
     }
+    if (destobj.devDependencies) {
+      Object.keys(destobj.devDependencies).forEach(doPreInstall);
+    }
+  }
+  console.log("PreInstall complete");
+  recursive(path, ".", {
+    overwrite: true,
+    filter: ["**/*", "!package.json"]
+  }).then(results => {
+    console.log("Copied the following files", results);
+    console.log("Completed generation with", dependency);
+    // fs.writeFileSync(packagePath, newJSON);
+    // yarnif.install();
+    if (destobj.sampleApp && destobj.sampleApp.postInstall) {
+      runCommand(destObj.sampleApp.postInstall);
+    } else {
+      if (destobj.dependencies) {
+        Object.keys(destobj.dependencies).forEach(doPostInstall);
+      }
+      if (destobj.devDependencies) {
+        Object.keys(destobj.devDependencies).forEach(doPostInstall);
+      }
+    }
+  });
+}
+function doPreInstall(key) {
+  return doSampleAppCommand(key, "preInstall");
+}
+function doPostInstall(key) {
+  return doSampleAppCommand(key, "postInstall");
+}
+function doSampleAppCommand(dependencyKey, subKey) {
+  const path = Path.resolve(
+    process.cwd(),
+    "node_modules",
+    dependencyKey,
+    "package.json"
+  );
+  if (fs.existsSync(path)) {
+    const package = JSON.parse(fs.readFileSync(path));
+    if (package.sampleApp && package.sampleApp[subKey]) {
+      runCommand(package.sampleApp[subKey]);
+    }
+  }
+}
+function runCommand(command) {
+  const commands = command.split(";");
+  commands.forEach(subCommand => {
+    const words = subCommand.split(" ");
+    const cmd = words[0];
+    const args = words.slice(1, words.length);
+    console.log("Starting command ", subCommand);
+    cp.spawnSync(cmd, args, { stdio: "inherit" });
+    console.log("Finished", subCommand);
   });
 }
 module.exports = makeSampleApp;
