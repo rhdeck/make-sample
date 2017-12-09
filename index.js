@@ -60,9 +60,9 @@ function makeSampleApp(dependency, basePath) {
         path = dependencyPath + "/" + sampleApp.path;
       } else if (sampleApp.module) {
         return makeSampleApp(sampleApp.module);
-      } else {
-        path = dependencyPath;
       }
+    } else {
+      path = dependencyPath;
     }
   }
   if (!fs.existsSync(path)) {
