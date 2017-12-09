@@ -20,7 +20,6 @@ commander.action((name, dependency) => {
   fs.mkdirSync(name);
   process.chdir(name);
   const package = pt.init(name);
-  console.log("Hi ho my package is ", package);
   pt.write(package);
   //let's checi out that depdency
   if (dependency.startsWith(".")) {
