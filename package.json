@@ -1,5 +1,5 @@
 {
-  "name": "make-sample-app",
+  "name": "make-sample",
   "version": "1.0.0",
   "description": "create sample app from within this app",
   "main": "index.js",
@@ -8,19 +8,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rhdeck/react-native-make-demo-app.git"
+    "url": "git+https://github.com/rhdeck/make-sample.git"
   },
   "author": "Ray Deck",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/rhdeck/react-native-make-demo-app/issues"
+    "url": "https://github.com/rhdeck/make-sample/issues"
   },
   "bin": "./bin/cli.js",
-  "homepage": "https://github.com/rhdeck/react-native-make-demo-app#readme",
+  "homepage": "https://github.com/rhdeck/make-sample#readme",
   "dependencies": {
     "commander": "^2.12.2",
-    "package-template": "rhdeck/package-template",
+    "package-template": "^1.1.0",
     "recursive-copy": "^2.0.7",
-    "yarnif": "rhdeck/yarnif"
+    "yarnif": "^1.0.0"
   }
 }
