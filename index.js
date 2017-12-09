@@ -26,15 +26,15 @@ function makeSampleApp(dependency, basePath) {
           dependencyBase = key;
         }
       });
-      if (!dependencyBase) {
-        if (package.devDependencies) {
-          Object.keys(package.devDependencies).forEach(key => {
-            const val = package.devDependencies[key];
-            if (val == dependency) {
-              dependencyBase = key;
-            }
-          });
-        }
+    }
+    if (!dependencyBase) {
+      if (package.devDependencies) {
+        Object.keys(package.devDependencies).forEach(key => {
+          const val = package.devDependencies[key];
+          if (val == dependency) {
+            dependencyBase = key;
+          }
+        });
       }
     }
   }
