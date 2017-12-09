@@ -15,17 +15,13 @@ function makeSampleApp(dependency, basePath) {
     console.log("This is not a valid npm package directory", basePath);
     return false;
   }
-  console.log("checking things out. my package is ", package);
   if (fs.existsSync(basePath + "/node_modules/" + dependency)) {
     dependencyBase = dependency;
-    console.log("I am using dependencybase from dependency", dependencyBase);
   } else {
     //Look up dependencies
-    console.log("Checking dependencies, bro", package);
     if (package.dependencies) {
       Object.keys(package.dependencies).forEach(key => {
         const val = package.dependencies[key];
-        console.log("Checking dependencies", key, val, dependency);
         if (val == dependency) {
           dependencyBase = key;
         }
@@ -33,8 +29,7 @@ function makeSampleApp(dependency, basePath) {
       if (!dependencyBase) {
         if (package.devDependencies) {
           Object.keys(package.devDependencies).forEach(key => {
-            const val = package.dependencies[key];
-            console.log("Checking dependencies", key, val, dependency);
+            const val = package.devDependencies[key];
             if (val == dependency) {
               dependencyBase = key;
             }
@@ -51,14 +46,13 @@ function makeSampleApp(dependency, basePath) {
       dependencyBase,
       dependencyPath
     );
-    yarnif.addDependency(dependency);
+    yarnif.addDevDependency(dependency);
     return makeSampleApp(dependency, basePath);
   }
   const depPackagePath = dependencyPath + "/package.json";
   var path = dependencyPath + "/sampleapp/";
   if (!fs.existsSync(depPackagePath) && !fs.existsSync(path)) {
     //Then this is the sample
-    console.log("using root because I don't have", depPackagePath, path);
     path = dependencyPath;
   } else {
     //Open the package
@@ -72,6 +66,8 @@ function makeSampleApp(dependency, basePath) {
         path = dependencyPath + "/" + sampleApp.path;
       } else if (sampleApp.module) {
         return makeSampleApp(sampleApp.module);
+      } else {
+        path = dependencyPath;
       }
     }
   }
