@@ -13,6 +13,10 @@ commander.action((name, dependency) => {
     console.log("Usage: make-sample-app <dependency>");
     exit(1);
   }
+  if (fs.existsSync(name)) {
+    console.log("I cannot overwrite an existing directory");
+    process.exit(1);
+  }
   fs.mkdirSync(name);
   process.chdir(name);
   const package = pt.init(name);
