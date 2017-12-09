@@ -6,7 +6,7 @@ const yarnif = require("yarnif");
 function makeSampleApp(dependency, basePath) {
   if (basePath) process.chdir(basePath);
   basePath = process.cwd();
-  const packagePath = basePath + "/package.json";
+  const packagePath = Path(basePath, "package.json");
   const package = JSON.parse(
     fs.readFileSync(packagePath, { encoding: "utf8" })
   );
@@ -15,7 +15,7 @@ function makeSampleApp(dependency, basePath) {
     console.log("This is not a valid npm package directory", basePath);
     return false;
   }
-  if (fs.existsSync(basePath + "/node_modules/" + dependency)) {
+  if (fs.existsSync(Path.resolve(basePath, "node_modules", dependency))) {
     dependencyBase = dependency;
   } else {
     //Look up dependencies
@@ -38,13 +38,13 @@ function makeSampleApp(dependency, basePath) {
       }
     }
   }
-  const dependencyPath = basePath + "/node_modules/" + dependencyBase;
+  const dependencyPath = Path.resolve(basePath, "node_modules", dependencyBase);
   if (!dependencyBase || !fs.existsSync(dependencyPath)) {
     yarnif.addDevDependency(dependency);
     return makeSampleApp(dependency, basePath);
   }
-  const depPackagePath = dependencyPath + "/package.json";
-  var path = dependencyPath + "/sampleapp/";
+  const depPackagePath = Path.resolve(dependencyPath, "package.json");
+  var path = Path.resolve(dependencyPath, "sampleapp");
   if (!fs.existsSync(depPackagePath) && !fs.existsSync(path)) {
     //Then this is the sample
     path = dependencyPath;
@@ -57,7 +57,7 @@ function makeSampleApp(dependency, basePath) {
     }
     if (typeof sampleApp === "object") {
       if (sampleApp.path && sampleApp.path.length) {
-        path = dependencyPath + "/" + sampleApp.path;
+        path = Path.resolve(dependencyPath, sampleApp.path);
       } else if (sampleApp.module) {
         return makeSampleApp(sampleApp.module);
       }
