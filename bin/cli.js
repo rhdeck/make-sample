@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const path = require("path");
+const Path = require("path");
 const commander = require("commander");
 const makeSampleApp = require("../index.js");
 const pt = require("package-template");
@@ -23,7 +23,7 @@ commander.action((name, dependency) => {
   pt.write(package);
   //let's checi out that depdency
   if (dependency.startsWith(".")) {
-    dependency = path.resolve(dependency);
+    dependency = Path.resolve(dependency);
   }
   makeSampleApp(dependency);
 });

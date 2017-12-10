@@ -6,7 +6,7 @@ const yarnif = require("yarnif");
 function makeSampleApp(dependency, basePath) {
   if (basePath) process.chdir(basePath);
   basePath = process.cwd();
-  const packagePath = Path(basePath, "package.json");
+  const packagePath = Path.resolve(basePath, "package.json");
   const package = JSON.parse(
     fs.readFileSync(packagePath, { encoding: "utf8" })
   );
