@@ -38,8 +38,11 @@ function makeSampleApp(dependency, basePath) {
       }
     }
   }
-  const dependencyPath =
-    dependencyBase && Path.resolve(basePath, "node_modules", dependencyBase);
+  const dependencyPath = Path.resolve(
+    basePath,
+    "node_modules",
+    dependencyBase || ""
+  );
   if (!dependencyBase || !fs.existsSync(dependencyPath)) {
     yarnif.addDevDependency(dependency);
     return makeSampleApp(dependency, basePath);
